@@ -7,9 +7,11 @@ on:
 jobs:
   release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v4
 
     - name: Set up Rust
       uses: actions-rs/toolchain@v1
@@ -24,23 +26,13 @@ jobs:
       id: get_version
       run: echo "VERSION=$(cargo pkgid | cut -d '#' -f2)" >> $GITHUB_ENV
 
-    - name: Create Release
-      id: create_release
-      uses: actions/create-release@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Release
+      uses: softprops/action-gh-release@v1
       with:
         tag_name: v${{ env.VERSION }}
-        release_name: Release v${{ env.VERSION }}
+        name: Release v${{ env.VERSION }}
         draft: false
         prerelease: false
-
-    - name: Upload Release Asset
-      uses: actions/upload-release-asset@v1
+        files: ./target/release/calc-distance
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./target/release/calc-distance
-        asset_name: calc-distance
-        asset_content_type: application/octet-stream

@@ -17,7 +17,7 @@ This project is a Rust-based command-line tool that calculates the distance betw
 1. Clone the repository:
 
 ```sh
-
+git clone https://github.com/merkio/distance_calculator.git
 ```
 
 2. Navigate to the project directory:
